@@ -1,0 +1,10 @@
+[Unit]
+Description=Run cleanup of expired pages daily
+
+[Timer]
+OnCalendar=*-*-* 03:00:00
+Persistent=true
+Unit=systemd-lufin-cleanup-expired-pages.service
+
+[Install]
+WantedBy=timers.target

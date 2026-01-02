@@ -8,7 +8,7 @@ lufin.mydomain.com {
 	}
 	handle {
 		# Change to the directory of repository/frontend/dist
-		root /var/www/lufin/frontend/dist
+		root /path/to/lufin/frontend/dist
 		try_files {path} /index.html
 		encode
 		file_server

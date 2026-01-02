@@ -1,22 +1,19 @@
 [Unit]
-Description=lufin backend
+Description=Cleanup expired pages for Lufin
 After=network.target
 
 [Service]
-Type=simple
+Type=oneshot
 # Change to the directory of repository/backend
 WorkingDirectory=/path/to/lufin/backend
 # By default Bun will be installed to /home/yourname/.bun/bin/bun
 # But you really should install it globally under root user
 # by moving /root/.bun/bin/bun to /usr/local/bin/
 # Make sure /usr/local/bin/bun has 755 permissions and root:root ownership
-ExecStart=/usr/local/bin/bun start
+ExecStart=/usr/local/bin/bun /path/to/lufin/backend/src/jobs/cleanup-expired-pages.ts
 DynamicUser=true
 ReadOnlyPaths=/path/to/lufin/backend
 EnvironmentFile=/srv/http/hloth.dev/lufin/backend/.env
-# Change the port if needed
-Environment=PORT=3000
-Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target

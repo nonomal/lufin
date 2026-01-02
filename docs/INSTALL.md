@@ -112,18 +112,19 @@ This is the recommended way of installing lufin for contributors or people who a
 
 ### Install
 
-1. Install frontend following steps in [frontend/README.md -> Install](../frontend/README.md#install)
-2. Install backend following steps in [backend/README.md -> Install](../backend/README.md#install)
-3. Set up a regular job for cleaning up expired pages to automatically run `bun /path/to/lufin/backend/src/jobs/cleanup-expired-pages.ts` command
+1. Clone repository to the server machine
+2. Install frontend following steps in [frontend/README.md -> Install](../frontend/README.md#install)
+3. Install backend following steps in [backend/README.md -> Install](../backend/README.md#install)
+4. Set up a regular job for cleaning up expired pages to automatically run `bun /path/to/lufin/backend/src/jobs/cleanup-expired-pages.ts` command
     - One way is to use [Cron](https://en.wikipedia.org/wiki/Cron) which comes with most linux installations
-      - add `0 * * * * /home/youruser/.bun/bin/bun --env-file=/var/www/lufin/backend/.env /var/www/lufin/backend/src/jobs/cleanup-expired-pages.ts` to the crontab, see [crontab.guru](https://crontab.guru/#0_*_*_*_*) to adjust frequency
-4.  Set up a system daemon that will run backend (command `bun start` in the /path/to/lufin/backend directory)
-    - One way is to use [systemd](https://en.wikipedia.org/wiki/Systemd) which comes with most linux installations
-      - For example service config see [contrib/systemd-lufin-backend.service](../contrib/systemd-lufin-backend.service)
+      - add `0 * * * * /home/youruser/.bun/bin/bun --env-file=/path/to/lufin/backend/.env /path/to/lufin/backend/src/jobs/cleanup-expired-pages.ts` to the crontab, see [crontab.guru](https://crontab.guru/#0_*_*_*_*) to adjust frequency
+    - Or use [systemd timers](https://www.freedesktop.org/software/systemd/man/systemd.timer.html) with a config like [contrib/systemd-lufin-cleanup-expired-pages.timer](../contrib/systemd-lufin-cleanup-expired-pages.timer) and [contrib/systemd-lufin-cleanup-expired-pages.service](../contrib/systemd-lufin-cleanup-expired-pages.service)
+5.  Set up a system daemon that will run backend (command `bun start` in the /path/to/lufin/backend directory)
+    - One way is to use [systemd](https://en.wikipedia.org/wiki/Systemd) which comes with most linux installations with a config like [contrib/systemd-lufin-backend.service](../contrib/systemd-lufin-backend.service)
     - Backend must be running under the same user who created `backend/.env` file, this file contains sensetive values and should not be readable by other users
     - You should not run backend as the root user or as any other sudoer, create a separate linux user (e.g. `lufin`) and restrict its access to only lufin directory
     - You can use the `PORT` environment variable to set the backend API port
-5.  Configure your reverse proxy by pointing url from `VITE_API_URL` (in `frontend/.env`) to the lufin backend (see [Web server example configuration](#web-serAver-example-configuration) below)
+6.  Configure your reverse proxy by pointing url from `VITE_API_URL` (in `frontend/.env`) to the lufin backend (see [Web server example configuration](#web-server-example-configuration) below)
     - The proxy must accept websockets connections (e.g. Caddy handles it automatically, but for nginx you must add `Upgrade` and `Connection` headers)
     - If you're getting HTTP 413 errors, increase request size limit (e.g Caddy does not set any limit by default, in nginx it's 1 MB and can be configured via `client_max_body_size`)
 
